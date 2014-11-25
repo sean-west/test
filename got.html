@@ -1,0 +1,288 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Game of Thrones</title>
+  <style>
+
+    #arya, #snow {
+      display: none;
+    }
+
+    #canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .map {
+      position: fixed;
+      top: 40px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("westeros.jpg") no-repeat;
+      background-size: cover;
+      opacity: 0.3;
+      z-index: 5;
+    }
+
+    header {
+      z-index: 20;
+      width: 100%;
+      height: 60px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #333;
+    }
+
+    h1 {
+      color: #fff;
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+      margin-left: 20px;
+    }
+
+    audio {
+      position: fixed;
+      bottom: 10px;
+      z-index: 10;
+    }
+
+  </style>
+</head>
+<body>
+
+  <img id="arya" src="arya.png" width="20" height="20">
+  <img id="snow" src="snow.png" width="20" height="20">
+
+  <canvas id="canvas" width="400" height="300"></canvas>
+  <script>
+
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+
+  //Arya's movement
+  var moveRight = false;
+  var moveLeft = false;
+  var moveDown = false;
+  var moveUp = false;
+
+  //Tyrion's movement
+  var moveRight2 = false;
+  var moveLeft2 = false;
+  var moveDown2 = false;
+  var moveUp2 = false;
+
+  //Key controls
+  var handleKeyDown = function(evt) {
+    if (evt.keyCode === 37) {
+      //Left arrow was pressed
+      moveRight = false;
+      moveLeft = true;
+      moveDown = false;
+      moveUp = false;
+    }
+
+    if (evt.keyCode === 65) {
+      //A key was pressed
+      moveRight2 = false;
+      moveLeft2 = true;
+      moveDown2 = false;
+      moveUp2 = false;
+    }
+
+    if (evt.keyCode === 38) {
+      //Up Arrow was pressed
+      moveRight = false;
+      moveLeft = false;
+      moveDown = false;
+      moveUp = true;
+    }
+
+    if (evt.keyCode === 87) {
+      //W key was pressed
+      moveRight2 = false;
+      moveLeft2 = false;
+      moveDown2 = false;
+      moveUp2 = true;
+    }
+
+    if (evt.keyCode === 39) {
+      //Right arrow was pressed
+      moveRight = true;
+      moveLeft = false;
+      moveDown = false;
+      moveUp = false;
+    }
+
+    if (evt.keyCode === 83) {
+      //S key was pressed
+      moveRight2 = true;
+      moveLeft2 = false;
+      moveDown2 = false;
+      moveUp2 = false;
+    }
+
+    if (evt.keyCode === 40) {
+      //Down arrow was pressed
+      moveRight = false;
+      moveLeft = false;
+      moveDown = true;
+      moveUp = false;
+    }
+
+    if (evt.keyCode === 90) {
+      //Z arrow was pressed
+      moveRight2 = false;
+      moveLeft2 = false;
+      moveDown2 = true;
+      moveUp2 = false;
+    }
+
+    //spacebar pauses both characters
+    if (evt.keyCode === 32) {
+        moveRight = false;
+        moveLeft = false;
+        moveDown = false;
+        moveUp = false;
+        moveRight2 = false;
+        moveLeft2 = false;
+        moveDown2 = false;
+        moveUp2 = false;
+    }
+
+  };
+
+  //don't worry about what window is,
+  //just realize that we are telling
+  //the browser to call our handleKeyDown
+  //function defined above when a user
+  //presses a key
+  window.addEventListener('keydown',handleKeyDown,true);
+
+  //Arya' starting coordinates
+  var x = 120;
+  var y = 220;
+
+  //draws Arya and resets board to give motion
+  var drawArya = function() {
+    //clear background
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+
+
+    if (moveRight === true) {
+      //move the square to the right
+      x = x + 1;
+    }
+
+    if (moveLeft === true) {
+      //move the square to the left
+      x = x - 1;
+    }
+
+    if (moveUp === true) {
+      y = y - 1;
+    }
+
+    if (moveDown === true) {
+      y = y + 1;
+    }
+
+
+    //make sure it doesn't go off the screen though
+    if (x > canvas.width) {
+      //x %= canvas.width;
+      x = 0;
+    }
+
+    if (x < 0) {
+      //x %= canvas.width;
+      x = 400;
+    }
+
+    if (y > canvas.height) {
+      y = 0;
+    }
+
+    if (y < 0) {
+      y = 300;
+    }
+
+    var img = document.getElementById("arya");
+    ctx.drawImage(img, x, y);
+  };
+
+  //Jon's starting coordinates
+  var x2 = 100;
+  var y2 = 50;
+
+  //draws Tyrion and resets board to give motion
+  var drawSnow = function() {
+    //clear background
+    ctx.fillStyle = "rgba(255, 255, 255, 0)";
+    ctx.fillRect(0,0, canvas.width, canvas.height);
+
+
+    if (moveRight2 === true) {
+      //move the square to the right
+      x2 = x2 + 1;
+    }
+
+    if (moveLeft2 === true) {
+      //move the square to the left
+      x2 = x2 - 1;
+    }
+
+    if (moveUp2 === true) {
+      y2 = y2 - 1;
+    }
+
+    if (moveDown2 === true) {
+      y2 = y2 + 1;
+    }
+
+
+    //make sure it doesn't go off the screen though
+    if (x2 > canvas.width) {
+      //x %= canvas.width;
+      x2 = 0;
+    }
+
+    if (x2 < 0) {
+      //x %= canvas.width;
+      x2 = 400;
+    }
+
+    if (y > canvas.height) {
+      y2 = 0;
+    }
+
+    if (y2 < 0) {
+      y2 = 300;
+    }
+
+    var img = document.getElementById("snow");
+    ctx.drawImage(img, x2, y2);
+  };
+
+  //calls draw function and sets speed
+  setInterval(drawArya, 10);
+  setInterval(drawSnow, 10);
+
+  </script>
+
+  <div class = "map"></div>
+
+  <header>
+    <h1>Reunite Arya and Jon Snow!</h1>
+  </header>
+
+  <audio controls>
+      <source src="got.mp3" type="audio/mp3">
+  </audio>
+
+
+</body>
+</html>
